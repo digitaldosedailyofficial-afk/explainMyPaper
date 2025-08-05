@@ -23,21 +23,16 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
-      - name: Install dos2unix
-        run: sudo apt-get update && sudo apt-get install dos2unix -y
-
-      - name: Fix gradlew line endings
+      - name: Prepare Gradle Wrapper
         run: |
+          sudo apt-get update && sudo apt-get install dos2unix -y
           dos2unix ./gradlew
           dos2unix ./gradle/wrapper/gradle-wrapper.jar
-
-      - name: Grant Permission to Execute Gradle Wrapper
-        run: |
           chmod +x ./gradlew
           chmod +x ./gradle/wrapper/gradle-wrapper.jar
 
       - name: Build Debug APK
-        run: ./gradlew assembleDebug
+        run: bash ./gradlew assembleDebug
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
