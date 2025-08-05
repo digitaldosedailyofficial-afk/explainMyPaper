@@ -57,13 +57,9 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-   private void processImage(Bitmap bitmap) {
+private void processImage(Bitmap bitmap) {
     InputImage image = InputImage.fromBitmap(bitmap, 0);
-
-    // Initialize TextRecognizerOptions with the language tag for Marathi (mr)
-    TextRecognizerOptions options = new TextRecognizerOptions.Builder().setLanguageTag("mr").build();
-    
-    TextRecognition.getClient(options)
+    TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
             .process(image)
             .addOnSuccessListener(visionText -> {
                 String resultText = visionText.getText();
