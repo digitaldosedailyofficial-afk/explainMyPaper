@@ -23,10 +23,15 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
+      - name: Fix gradlew line endings
+        run: |
+          dos2unix ./gradlew
+          dos2unix ./gradle/wrapper/gradle-wrapper.jar
+
       - name: Grant Permission to Execute Gradle Wrapper
         run: |
           chmod +x ./gradlew
-          chmod +x ./gradle/wrapper/gradle-wrapper.jar # Added this line
+          chmod +x ./gradle/wrapper/gradle-wrapper.jar
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
