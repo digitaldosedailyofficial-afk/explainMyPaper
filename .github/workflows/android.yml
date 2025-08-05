@@ -23,6 +23,9 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
+      - name: Install dos2unix
+        run: sudo apt-get update && sudo apt-get install dos2unix -y
+
       - name: Fix gradlew line endings
         run: |
           dos2unix ./gradlew
