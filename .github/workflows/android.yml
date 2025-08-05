@@ -17,22 +17,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v3
         with:
-          distribution: 'temurin'
           java-version: 17
-
-      - name: Prepare Gradle Wrapper
-        run: |
-          sudo apt-get update && sudo apt-get install dos2unix -y
-          dos2unix ./gradlew
-          dos2unix ./gradle/wrapper/gradle-wrapper.jar
-          chmod +x ./gradlew
-          chmod +x ./gradle/wrapper/gradle-wrapper.jar
+          distribution: 'temurin'
 
       - name: Build Debug APK
-        run: bash ./gradlew assembleDebug
+        run: ./gradlew assembleDebug
 
       - name: Upload Debug APK
         uses: actions/upload-artifact@v4
