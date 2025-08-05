@@ -23,8 +23,10 @@ jobs:
           distribution: 'temurin'
           java-version: 17
 
-      - name: Grant Permission to Execute gradlew
-        run: chmod +x ./gradlew
+      - name: Grant Permission to Execute Gradle Wrapper
+        run: |
+          chmod +x ./gradlew
+          chmod +x ./gradle/wrapper/gradle-wrapper.jar # Added this line
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
