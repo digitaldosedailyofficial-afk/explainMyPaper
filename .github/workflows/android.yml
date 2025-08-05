@@ -17,16 +17,14 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 17
+
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v3
-        with:
-          java-version: 17
-          distribution: 'temurin'
-
-      - name: Ensure gradlew and wrapper JAR are executable
-        run: |
-          chmod +x ./gradlew
-          chmod +x ./gradle/wrapper/gradle-wrapper.jar # Added this line
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
