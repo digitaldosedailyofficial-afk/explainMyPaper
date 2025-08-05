@@ -57,17 +57,21 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void processImage(Bitmap bitmap) {
-        InputImage image = InputImage.fromBitmap(bitmap, 0);
-        TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-                .process(image)
-                .addOnSuccessListener(visionText -> {
-                    String resultText = visionText.getText();
-                    resultTextView.setText(resultText);
-                    tts.speak("हे कागदपत्र असे म्हणते: " + resultText, TextToSpeech.QUEUE_FLUSH, null, null);
-                })
-                .addOnFailureListener(e -> resultTextView.setText("ओळखण्यात अडचण आली."));
-    }
+   private void processImage(Bitmap bitmap) {
+    InputImage image = InputImage.fromBitmap(bitmap, 0);
+
+    // Initialize TextRecognizerOptions with the language tag for Marathi (mr)
+    TextRecognizerOptions options = new TextRecognizerOptions.Builder().setLanguageTag("mr").build();
+    
+    TextRecognition.getClient(options)
+            .process(image)
+            .addOnSuccessListener(visionText -> {
+                String resultText = visionText.getText();
+                resultTextView.setText(resultText);
+                tts.speak("हे कागदपत्र असे म्हणते: " + resultText, TextToSpeech.QUEUE_FLUSH, null, null);
+            })
+            .addOnFailureListener(e -> resultTextView.setText("ओळखण्यात अडचण आली."));
+}
 
     @Override
     protected void onDestroy() {
