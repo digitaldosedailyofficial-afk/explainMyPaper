@@ -1,4 +1,3 @@
-
 name: Android CI
 
 on:
@@ -24,8 +23,10 @@ jobs:
           java-version: 17
           distribution: 'temurin'
 
-      - name: Ensure gradlew is executable
-        run: chmod +x ./gradlew
+      - name: Ensure gradlew and wrapper JAR are executable
+        run: |
+          chmod +x ./gradlew
+          chmod +x ./gradle/wrapper/gradle-wrapper.jar # Added this line
 
       - name: Build Debug APK
         run: ./gradlew assembleDebug
