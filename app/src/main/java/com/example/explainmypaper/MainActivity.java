@@ -1,80 +1,76 @@
+package com.example.yourappname;
 
-package com.example.explainmypaper;
-
-import android.app.Activity;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.speech.tts.TextToSpeech;
+import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
 import com.google.mlkit.vision.common.InputImage;
+import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions;
-import java.util.Locale;
+
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int REQUEST_IMAGE_CAPTURE = 1;
-    private TextView resultTextView;
+
+    private static final int REQUEST_IMAGE = 1;
     private ImageView imageView;
-    private TextToSpeech tts;
+    private TextView resultText;
+    private Bitmap selectedImageBitmap;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        resultTextView = findViewById(R.id.resultTextView);
+        
         imageView = findViewById(R.id.imageView);
-        Button captureButton = findViewById(R.id.captureButton);
+        resultText = findViewById(R.id.resultText);
+        Button scanButton = findViewById(R.id.scanButton);
 
-        tts = new TextToSpeech(this, status -> {
-            if (status == TextToSpeech.SUCCESS) {
-                tts.setLanguage(new Locale("mr")); // Marathi
-            }
-        });
-
-        captureButton.setOnClickListener(v -> {
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
-            }
+        scanButton.setOnClickListener(v -> {
+            Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(intent, REQUEST_IMAGE);
         });
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == Activity.RESULT_OK && data != null) {
-            Bundle extras = data.getExtras();
-            Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imageView.setImageBitmap(imageBitmap);
-            processImage(imageBitmap);
+
+        if (requestCode == REQUEST_IMAGE && resultCode == RESULT_OK && data != null) {
+            Uri imageUri = data.getData();
+            try {
+                selectedImageBitmap = MediaStore.Images.Media.getBitmap(this.getContentResolver(), imageUri);
+                imageView.setImageBitmap(selectedImageBitmap);
+                runTextRecognition(selectedImageBitmap);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 
-private void processImage(Bitmap bitmap) {
-    InputImage image = InputImage.fromBitmap(bitmap, 0);
-    TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-            .process(image)
-            .addOnSuccessListener(visionText -> {
-                String resultText = visionText.getText();
-                resultTextView.setText(resultText);
-                tts.speak("हे कागदपत्र असे म्हणते: " + resultText, TextToSpeech.QUEUE_FLUSH, null, null);
-            })
-            .addOnFailureListener(e -> resultTextView.setText("ओळखण्यात अडचण आली."));
-}
+    private void runTextRecognition(Bitmap bitmap) {
+        InputImage image = InputImage.fromBitmap(bitmap, 0);
+        com.google.mlkit.vision.text.TextRecognizer recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS);
 
-    @Override
-    protected void onDestroy() {
-        if (tts != null) {
-            tts.stop();
-            tts.shutdown();
+        recognizer.process(image)
+                .addOnSuccessListener(this::displayText)
+                .addOnFailureListener(e -> resultText.setText("स्कॅन अयशस्वी: " + e.getMessage()));
+    }
+
+    private void displayText(Text visionText) {
+        String result = visionText.getText();
+        if (result.isEmpty()) {
+            resultText.setText("काहीही ओळखले गेले नाही.");
+        } else {
+            resultText.setText(result);
         }
-        super.onDestroy();
     }
 }

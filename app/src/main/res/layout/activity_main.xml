@@ -1,28 +1,68 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FAFAFA"
+    tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/captureButton"
+    <!-- Header with Icon -->
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="कागदपत्र स्कॅन करा" />
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="8dp">
 
+        <ImageView
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/ic_scan"
+            android:contentDescription="Scan Icon"
+            android:layout_marginEnd="8dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="कागदपत्र स्कॅन करा"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#2E7D32" />
+    </LinearLayout>
+
+    <!-- Scan Button -->
+    <Button
+        android:id="@+id/scanButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="स्कॅन करा"
+        android:drawableLeft="@drawable/ic_camera"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"
+        android:layout_marginTop="16dp"
+        android:padding="12dp" />
+
+    <!-- Scanned Image -->
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="match_parent"
         android:layout_height="200dp"
-        android:scaleType="centerCrop"
-        android:layout_marginTop="16dp" />
+        android:layout_marginTop="16dp"
+        android:scaleType="fitCenter"
+        android:background="#E0E0E0"
+        android:contentDescription="Scanned Image" />
 
+    <!-- OCR Result Text -->
     <TextView
-        android:id="@+id/resultTextView"
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ओळखलेला मजकूर येथे दिसेल"
-        android:layout_marginTop="16dp"
-        android:textSize="16sp" />
+        android:text="स्कॅन केल्यानंतर मजकूर येथे दिसेल"
+        android:textColor="#424242"
+        android:textSize="16sp"
+        android:padding="12dp"
+        android:layout_marginTop="12dp"
+        android:background="#F1F8E9" />
 </LinearLayout>
