@@ -1,6 +1,6 @@
-
 plugins {
     id 'com.android.application'
+    id 'org.jetbrains.kotlin.android' // ✅ Needed for Kotlin support
 }
 
 android {
@@ -25,15 +25,29 @@ android {
     buildFeatures {
         viewBinding true
     }
+
+    // ✅ Force consistent Kotlin versions to avoid duplicate classes
+    configurations.all {
+        resolutionStrategy {
+            force "org.jetbrains.kotlin:kotlin-stdlib:1.9.10"
+            force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.10"
+            force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.10"
+        }
+    }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:appcompat:1.6.1'
-    implementation 'com.google.mlkit:text-recognition:16.0.0'
-    implementation 'com.google.android.material:material:1.9.0'
-    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0'
+    // ✅ Kotlin Standard Library
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.10"
 
+    // UI + AppCompat
+    implementation 'androidx.appcompat:appcompat:1.6.1'
+    implementation 'com.google.android.material:material:1.9.0'
+
+    // Kotlin extensions for Android
     implementation 'androidx.core:core-ktx:1.13.1'
 
-
+    // ML Kit OCR
+    implementation 'com.google.mlkit:text-recognition:16.0.0'
+    implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0'
 }
