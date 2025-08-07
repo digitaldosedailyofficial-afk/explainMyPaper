@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Replace with your actual API key
-        String apiKey = "YOUR_API_KEY";
+        String apiKey = "AIzaSyDgTKZgFJD0Fvdhu41zS11TMf6LRsoDcUY";
         model = GenerativeModelFutures.from(new GenerativeModel("gemini-pro", apiKey));
 
         imageView = findViewById(R.id.imageView);
