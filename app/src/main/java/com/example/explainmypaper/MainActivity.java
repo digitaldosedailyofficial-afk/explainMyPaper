@@ -52,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
 
         // Replace with your actual API key
         String apiKey = BuildConfig.GEMINI_API_KEY;
-        model = GenerativeModelFutures.from(new GenerativeModel("gemini-pro", apiKey));
+        model = GenerativeModelFutures.from(new GenerativeModel("gemini-2.5-flash-preview-05-20", apiKey));
 
         imageView = findViewById(R.id.imageView);
         resultText = findViewById(R.id.resultText);
