@@ -16,16 +16,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.ai.client.generativeai.GenerativeModel;
+import com.google.ai.client.generativeai.java.GenerativeModelFutures;
+import com.google.common.util.concurrent.FutureCallback;
+import com.google.common.util.concurrent.Futures;
+import com.google.common.util.concurrent.ListenableFuture;
 import com.google.mlkit.vision.common.InputImage;
 import com.google.mlkit.vision.text.Text;
 import com.google.mlkit.vision.text.TextRecognition;
 import com.google.mlkit.vision.text.devanagari.DevanagariTextRecognizerOptions;
+
 import java.io.IOException;
 import java.util.Locale;
-
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.launch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -35,7 +38,8 @@ public class MainActivity extends AppCompatActivity {
     private Bitmap selectedImageBitmap;
     private TextToSpeech textToSpeech;
     private Button scanButton, playButton, stopButton;
-    private GenerativeModel generativeModel;
+    private GenerativeModelFutures model;
+    private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +47,8 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Replace with your actual API key
-        String apiKey = "AIzaSyDgTKZgFJD0Fvdhu41zS11TMf6LRsoDcUY"; 
-        generativeModel = new GenerativeModel("gemini-pro", apiKey);
+        String apiKey = "YOUR_API_KEY";
+        model = GenerativeModelFutures.from(new GenerativeModel("gemini-pro", apiKey));
 
         imageView = findViewById(R.id.imageView);
         resultText = findViewById(R.id.resultText);
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
 
         playButton.setOnClickListener(v -> {
             String text = resultText.getText().toString();
-            if (!text.isEmpty()) {
+            if (!text.isEmpty() && textToSpeech.isSpeaking()) {
                 textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
             }
         });
@@ -114,23 +118,25 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        CoroutineScope coroutineScope = new CoroutineScope(Dispatchers.getMain());
-        coroutineScope.launch(() -> {
-            try {
-                String prompt = "Read the following document text and extract important information such as Bill Number, Customer Name, Address, and Total Amount. Please reply in Marathi. If any information is missing, say 'उपलब्ध नाही'.\n\n" + recognizedText;
-                String response = generativeModel.generateContent(prompt).getText();
+        String prompt = "तुम्हाला एक कागदपत्र मिळाले आहे. त्यातील सर्वात महत्त्वाची माहिती, जसे की बिल क्रमांक, ग्राहकाचे नाव, पत्ता आणि एकूण रक्कम मराठीमध्ये थोडक्यात सांगा. जर माहिती उपलब्ध नसेल तर 'उपलब्ध नाही' असे लिहा. \n\n" + recognizedText;
 
-                // Run on the UI thread
+        ListenableFuture<com.google.ai.client.generativeai.models.GenerateContentResponse> future = model.generateContent(prompt);
+        Futures.addCallback(future, new FutureCallback<com.google.ai.client.generativeai.models.GenerateContentResponse>() {
+            @Override
+            public void onSuccess(com.google.ai.client.generativeai.models.GenerateContentResponse result) {
+                String response = result.getText();
                 runOnUiThread(() -> {
                     resultText.setText(response);
                     textToSpeech.speak(response, TextToSpeech.QUEUE_FLUSH, null, null);
                 });
-
-            } catch (Exception e) {
-                Log.e("GenerativeAI", "Error: " + e.getMessage());
-                runOnUiThread(() -> resultText.setText("AI प्रतिसाद मिळवण्यात अयशस्वी: " + e.getMessage()));
             }
-        });
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.e("GenerativeAI", "Error: " + t.getMessage());
+                runOnUiThread(() -> resultText.setText("AI प्रतिसाद मिळवण्यात अयशस्वी: " + t.getMessage()));
+            }
+        }, executorService);
     }
 
     @Override
@@ -139,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
             textToSpeech.stop();
             textToSpeech.shutdown();
         }
+        executorService.shutdown();
         super.onDestroy();
     }
 }
