@@ -17,6 +17,8 @@ import android.widget.Toast;
 
 import com.google.ai.client.generativeai.GenerativeModel;
 import com.google.ai.client.generativeai.java.GenerativeModelFutures;
+import com.google.ai.client.generativeai.type.Content;
+import com.google.ai.client.generativeai.type.GenerateContentResponse;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -74,7 +76,7 @@ public class MainActivity extends AppCompatActivity {
 
         playButton.setOnClickListener(v -> {
             String text = resultText.getText().toString();
-            if (!text.isEmpty() && textToSpeech.isSpeaking()) {
+            if (!text.isEmpty() && textToSpeech != null) {
                 textToSpeech.speak(text, TextToSpeech.QUEUE_FLUSH, null, null);
             }
         });
@@ -119,15 +121,18 @@ public class MainActivity extends AppCompatActivity {
         }
 
         String prompt = "तुम्हाला एक कागदपत्र मिळाले आहे. त्यातील सर्वात महत्त्वाची माहिती, जसे की बिल क्रमांक, ग्राहकाचे नाव, पत्ता आणि एकूण रक्कम मराठीमध्ये थोडक्यात सांगा. जर माहिती उपलब्ध नसेल तर 'उपलब्ध नाही' असे लिहा. \n\n" + recognizedText;
+        Content content = new Content.Builder().addText(prompt).build();
 
-        ListenableFuture<com.google.ai.client.generativeai.models.GenerateContentResponse> future = model.generateContent(prompt);
-        Futures.addCallback(future, new FutureCallback<com.google.ai.client.generativeai.models.GenerateContentResponse>() {
+        ListenableFuture<GenerateContentResponse> future = model.generateContent(content);
+        Futures.addCallback(future, new FutureCallback<GenerateContentResponse>() {
             @Override
-            public void onSuccess(com.google.ai.client.generativeai.models.GenerateContentResponse result) {
+            public void onSuccess(GenerateContentResponse result) {
                 String response = result.getText();
                 runOnUiThread(() -> {
                     resultText.setText(response);
-                    textToSpeech.speak(response, TextToSpeech.QUEUE_FLUSH, null, null);
+                    if (response != null && !response.isEmpty()) {
+                        textToSpeech.speak(response, TextToSpeech.QUEUE_FLUSH, null, null);
+                    }
                 });
             }
 

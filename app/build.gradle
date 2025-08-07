@@ -59,6 +59,7 @@ dependencies {
 
     // Google AI client library for Generative AI
     implementation("com.google.ai.client.generativeai:generativeai:0.8.0")
-    // Coroutines for async operations
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
+    
+    // Guava dependency for async futures
+    implementation("com.google.guava:guava:33.2.1-jre")
 }
