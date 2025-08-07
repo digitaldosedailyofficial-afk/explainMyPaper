@@ -14,7 +14,6 @@ android {
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
-
     }
 
     buildTypes {
@@ -37,7 +36,6 @@ android {
         jvmTarget = '17'
     }
 
-    // Avoid duplicate Kotlin classes
     configurations.all {
         resolutionStrategy {
             force "org.jetbrains.kotlin:kotlin-stdlib:1.9.10"
@@ -49,19 +47,17 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib:1.9.10"
-
-    // Material 3 support
     implementation 'androidx.compose.material3:material3:1.2.1'
-
-    // Core + AppCompat
     implementation 'androidx.core:core-ktx:1.13.1'
     implementation 'androidx.appcompat:appcompat:1.6.1'
 
-    // ML Kit
-    implementation 'com.google.mlkit:text-recognition:16.0.0'
+    // ML Kit for Devanagari Text Recognition (Marathi)
     implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0'
 
-    // Material Components (if needed)
+    // Material Components
     implementation 'com.google.android.material:material:1.9.0'
 
+    // Text-to-Speech library
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
 }
