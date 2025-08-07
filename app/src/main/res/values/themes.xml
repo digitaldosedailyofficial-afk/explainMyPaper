@@ -1,8 +1,20 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="Theme.ExplainMyPaper" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
-        <item name="colorOnPrimary">@color/colorOnPrimary</item>
-        <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
-        </style>
+
+    <!-- Base application theme using Material3 -->
+    <style name="Theme.YourAppName" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Primary brand color. -->
+        <item name="colorPrimary">@color/purple_40</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <item name="colorPrimaryContainer">@color/purple_90</item>
+        <item name="colorOnPrimaryContainer">@color/black</item>
+
+        <!-- Secondary brand color. -->
+        <item name="colorSecondary">@color/teal_40</item>
+        <item name="colorOnSecondary">@color/white</item>
+
+        <!-- Status bar color -->
+        <item name="android:statusBarColor" tools:targetApi="l">@android:color/transparent</item>
+
+        <!-- Customize your theme here. -->
+    </style>
 </resources>
