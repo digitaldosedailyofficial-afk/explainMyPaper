@@ -53,11 +53,12 @@ dependencies {
 
     // ML Kit for Devanagari Text Recognition (Marathi)
     implementation 'com.google.mlkit:text-recognition-devanagari:16.0.0'
-
-    // Material Components
     implementation 'com.google.android.material:material:1.9.0'
-
-    // Text-to-Speech library
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0'
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.7.0'
+
+    // Google AI client library for Generative AI
+    implementation("com.google.ai.client.generativeai:generativeai:0.8.0")
+    // Coroutines for async operations
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3'
 }
