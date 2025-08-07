@@ -31,6 +31,8 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import com.example.explainmypaper.BuildConfig;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // Replace with your actual API key
-        String apiKey = "AIzaSyDgTKZgFJD0Fvdhu41zS11TMf6LRsoDcUY";
+        String apiKey = BuildConfig.GEMINI_API_KEY;
         model = GenerativeModelFutures.from(new GenerativeModel("gemini-pro", apiKey));
 
         imageView = findViewById(R.id.imageView);
